@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 
 function DragElement(props) {
+    const [isDrag, setIsDrag] = useState(false)
     const {
         onDragEnd,
         data = [],
@@ -15,7 +16,6 @@ function DragElement(props) {
         backgroundItemStyle = {
             margin: "10px",
             background: "gray",
-            transition: "all 3s ease",
             padding: "16px"
         }
     } = props
@@ -35,12 +35,14 @@ function DragElement(props) {
             {
                 list.map((item, index) => {
                     return <div
-                        style={backgroundItemStyle ? backgroundItemStyle : {}}
+                        style={backgroundItemStyle ? backgroundItemStyle : {}
+                        }
                         key={index}
                         draggable={true}
                         onDragStart={(e) => {
                             e.dataTransfer.setData("name", item)
                             e.dataTransfer.setData("startIndex", e.target?.getAttribute("data-index"))
+                            setIsDrag(true)
                         }}
                         data-index={index}
                         onDragOver={handleAllow}
@@ -52,13 +54,12 @@ function DragElement(props) {
                             const [remove] = result.splice(startIndex, 1)
                             result.splice(targetIndex, 0, remove)
                             setList(result)
+                            setIsDrag(false)
                             onDragEnd(result, startIndex, targetIndex)
                         }}
                     >
                         {MoveItem(item)}
                     </div>
-
-
                 })
             }
         </div>
